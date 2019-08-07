@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="jp">
+
+<head>
+    <title>Bus Time TUIS Remix</title>
+    <meta http-equiv="Content-Type" content="text/html;" charset="utf-8" />
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <style>
+        .page-setting{
+       position: relative;     
+    z-index: 0;   
+        }
+        .margin5 {
+            margin-top: 5px;
+            margin-left: 5px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+    </style>
+
+</head>
+
+<body class="h-100" style="background:black;">
+    <div id="chiba-page" class="page-setting h-100">
+        <header>
+            <div style="background:chartreuse;text-align: center;"><span style="font-size:4vw;">千葉駅方面</span></div>
+            <div style="background:aquamarine;text-align: center;"><span id=DaySpace style="color:black;font-size:3vw;"></span><span
+                    id="HolidayInfo" style="color:black;font:bold;font-size:3vw;"></span></div>
+            <div style="background: darkslategrey;text-align: center;"><span id=NowTimeSpace style="color:chartreuse;font-size:7vw;"></span></div>
+            <div></div>
+        </header>
+        <div class="margin5 h-100" style="color:white">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2 border" style="text-align:center;font-size:2vw;">バス系統</div>
+                    <div class="col-md-4 border" style="text-align:center;font-size:2vw;">経由地点</div>
+                    <div class="col-md-2 border" style="text-align:center;font-size:2vw;">発車時刻</div>
+                    <div class="col-md-2 border" style="text-align:center;font-size:2vw;">到着時刻</div>
+                    <div class="col-md-2 border" style="text-align:center;font-size:2vw;">カウントダウン</div>
+                </div>
+                <div id="print_chiba">
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div id="tsuga-page" class="page-setting h-100">
+        <header>
+            <div style="background:plum;text-align: center;"><span style="font-size:4vw;">都賀駅方面</span></div>
+            <div style="background:aquamarine;text-align: center;"><span id=DaySpace2 style="color:black;font-size:3vw;"></span><span
+                    id="HolidayInfo2" style="color:black;font:900;font-size:3vw;"></span></div>
+            <div style="background: darkslategrey;text-align: center;"><span id=NowTimeSpace2 style="color:chartreuse;font-size:7vw;"></span></div>
+            <div></div>
+        </header>
+        <div class="margin5 h-100" style="color:white">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2 border" style="text-align:center;font-size:2vw;">バス系統</div>
+                    <div class="col-md-4 border" style="text-align:center;font-size:2vw;">経由地点</div>
+                    <div class="col-md-2 border" style="text-align:center;font-size:2vw;">発車時刻</div>
+                    <div class="col-md-2 border" style="text-align:center;font-size:2vw;">到着時刻</div>
+                    <div class="col-md-2 border" style="text-align:center;font-size:2vw;">カウントダウン</div>
+                </div>
+                <div id="print_tsuga">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="dead-page" class="page-setting h-100">
+        <header>
+            <div style="background:white;color:black;text-align: center;"><span style="font-size:6vh;">運行終了</span></div>
+            <div style="background:red;text-align: center;"><span id=DaySpace3 style="color:black;font-size:8vh;"></span></div>
+            <div style="background: black;text-align: center;"><span id=NowTimeSpace3 style="color:red;font-size:15vh;"></span></div>
+            <div><span id="HolidayInfo3" style="color:black;font: 900;"></span></div>
+        </header>
+        <div class="margin5 h-100" style="color:white">
+            <div class="container-fluid">
+                <div class="row" style="font-size:5vw;text-align:center;">
+                    <div class="col-md-12 border">本日の便の運行は終了しました</div>
+                    <div class="col-md-12 border">日付変更後に初バス運行が表示されます</div>
+                    <div class='col-md-12 border'>またのご利用お待ちしております</div>
+                    <div class="col-md-12 border">Thank you for using T3 System.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div style="background:rgb(60,60,60)">
+        <div id="WarningSpace" style="color:rgb(255, 76, 3);font-size: 5vh;white-space: nowrap;"></div>
+    </div>
+    <span style="color:chartreuse;font-size:1vw;">
+        System Msg: <span id="sysmsg" style="color:chartreuse;font-size:1vw;"></span>
+    </span>
+    <span style="
+            color:rgb(0, 197, 181);font-size:1vw;">
+        Update NTP: <span id="update_ntp" style="color:rgb(0, 183, 255);font-size:1vw;"></span>
+    </span>
+    <script>
+        window.onload = function () {
+
+            document.getElementById('sysmsg').innerHTML = "CSV読込中";
+            link = document.createElement('LINK');
+            link.rel = "stylesheet";
+            link.type = "text/css";
+            link.href = "afterstyle.css";
+            head = document.getElementsByTagName('HEAD').item(0);
+            head.appendChild(link);
+
+
+        }
+    </script>
+    <!--SERVICES-->
+    <script>console.log("Load Services");</script>
+    <script id="bs" src="../js/bootstrap.min.js"></script>
+    <script id="sa" src="superagent.js"></script>
+    <script id="jh" src="japanese.holiday.js"></script>
+    <!--MODULES-->
+    <script id="up" src="module_startup.js"></script>
+    <script src="module_stpoint.js"></script>
+    <script src="module_setTime.js"></script>
+    <script id="ti" src="module_time.js"></script>
+    <script id="nt" src="NetTime.js"></script>
+    <script id="ta" src="module_table.js"></script>
+    <script id="ir" src="module_insert.js"></script>
+    <script id="ls" src="module_loopscript.js"></script>
+    <script id="pr" src="Texts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/0.0.11/push.min.js"></script>
+
+    <script type="text/javascript">
+
+        var cpage = document.getElementById('chiba-page');
+        var tpage = document.getElementById('tsuga-page');
+        var dpage = document.getElementById('dead-page');
+        nowpage = "chiba-page";
+        cpage.style.display = "none";
+        dpage.style.display = "none";
+        cpage.style.zIndex = "0";
+        tpage.style.zIndex = "1";
+        dpage.style.zIndex = "0";
+        var changeTab = function () {
+
+            if (deadpage == true) {
+                cpage.style.display = "none";
+                tpage.style.display = "none";
+                dpage.style.display = "block";
+                cpage.style.zIndex = "0";
+                tpage.style.zIndex = "0";
+                dpage.style.zIndex = "1";
+            }
+
+            else if (nowpage == "chiba-page") {
+                cpage.style.display = "none";
+                tpage.style.display = "block";
+                cpage.style.zIndex = "0";
+                tpage.style.zIndex = "1";
+                nowpage = 'tsuga-page';
+                return;
+            } else if (nowpage == "tsuga-page") {
+                tpage.style.display = "none";
+                cpage.style.display = "block";
+                tpage.style.zIndex = "0";
+                cpage.style.zIndex = "1";
+                nowpage = 'chiba-page';
+            }
+        }
+
+        setInterval(changeTab, 5000);
+    </script>
+
+
+
+
+    <!--pre style="color: white">
+    System Local Time: <span id="SysTimeSpace"></span>
+            Get NTP Local Time: <span id="getNTPTime"></span>
+        </pre>
+        p style="color:red">脆弱性情報</p>
+        <script id="_tangan_loader_30c67a648217a254569e4406dc852538" src="https://tanganrss.com/rsstxt/loader.php?url=https%3A%2F%2Ftanganrss.com%2Frsstxt%2Frsstxt.php%3Fkey%3D30c67a648217a254569e4406dc852538&id=30c67a648217a254569e4406dc852538&target=" type="text/javascript"></script>
+        登録内容の復元URL: https://tanganrss.com/rsstxt/regist.php?key=30c67a648217a254569e4406dc852538 -->
+    <script>document.getElementById('sysmsg').insertAdjacentHTML('afterbegin', '起動中...');</script>
+    <script>super_req_A = window.superagent; super_req_B = window.superagent; super_req_C = window.superagent; super_req_D = window.superagent;</script>
+
+    <script>
+        /*startup static val*/
+        times = new Object();
+        times.holiday_flag = 100;
+        times.diagramtype = 100;
+        fixedTime = 0;
+        lastUpdateNTP = "NTP LOADING... ";
+        WarningText = [];
+        PRText = [];
+        endmsg = 0;
+        deadpage = false;
+        /*
+        times.h = 0;
+        times.m = 0;
+        times.s = 0;*/
+        document.getElementById('WarningSpace').innerHTML = "Welcoming Tuis Time Table";
+    </script>
+    <script>
+        checkDay = function () {
+
+
+
+
+
+            if (new Date().getDate() != times.ready.getDate()) {
+                /*リロード実施*/
+                window.location.reload(true);
+            }
+            else if (new Date().getHours() != times.ready.getHours()) {
+                /*リロード実施*/
+                window.location.reload(false);
+            }
+        }
+        setInterval(checkDay, 1000);
+    </script>
+</body>
+<script>            startup(times);
+
+    get_table(times);
+    MakeStaticWarningText(times);
+    MakeStaticPRText(times);
+    document.getElementById('WarningSpace').innerHTML = '<p class="scrollings">'
+        + "本日もNSL京成バス配信システムをご利用いただきありがとうございます。"
+        + '</p>';
+    //document.getElementById('PRSpace').insertAdjacentHTML('afterbegin', "PR情報");
+    Warningflag = 1;
+    PRflag = 0;
+    setInterval(OneSecLoop, 1000)
+    setInterval(TenSecLoop, 15000);// 15 Sec
+
+
+
+</script>
+
+
+</html>

@@ -1,0 +1,43 @@
+﻿a:link{
+    color:white;
+    text-decoration : none;
+}
+li{
+    color:lime;
+    font:900;
+}
+
+html,body{
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+  /* Not Scroll*/
+.blink {
+    animation-name: flash; /*CSS側で定義したアニメーションの名前*/
+    animation-duration: 1s;/* アニメーションの長さ*/
+    animation-iteration-count: infinite; /*アニメーションを何回実行するか, infiniteだと無限ループ*/
+    /*animation-direction: alternate; /*alternateにすると、行って帰ってという風にアニメーションを実行する*/
+    animation-play-state: running; /*アニメーションを実行中の状態にする*/
+}
+
+  /*全体の何％進んだところで要素をどうするかの指定。今回は不透明度を0にする*/
+@keyframes flash {
+    50%{
+        opacity: 0;
+    }
+  }
+.oblique{
+  font-style:oblique;
+} 
+
+.scrollings{
+  animation: flowing 15s linear infinite;
+  transform: translateX(100%);
+}
+
+@keyframes flowing {
+  100% {
+    transform: translateX(-100%);
+  }
+}
