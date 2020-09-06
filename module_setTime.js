@@ -4,7 +4,7 @@ function set_NowTime(times) {
     let local = new Date();
     /*ローカルタイムでの時刻情報*/
     let localmili = local.getTime();
-    /*ローカルタイムで10分経過した場合、実行する。*/
+    /*ローカルタイムで10分経過した場合、実行する。
     if (fixedTime == 0 || localmili > fixedTime + 600000) {
         /*loadTime (NetTime.js)より取得し、Fix値をDateへ挿入する*/
         loadTime(times);
@@ -16,8 +16,10 @@ function set_NowTime(times) {
     } else {
         /*現在のローカルタイムとFix時のローカルタイムの差分にFix値に挿入する*/
         now = new Date(fixedTime + local.getTime() - this.localfixed);
-    }
-    lastUpdateNTP = luntp + " [ Latency:" + latency + "ms ]";
+    }*/
+    /* CHANGED: NICTが NTP via HTTP を廃止するため */
+    now = new Date();
+    lastUpdateNTP = "NTP同期は廃止しました.";
     /*修正時刻情報の細分化*/
     var now_h = now.getHours();
     var now_m = now.getMinutes();
